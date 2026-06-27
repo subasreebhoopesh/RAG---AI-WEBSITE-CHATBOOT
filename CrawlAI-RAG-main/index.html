@@ -566,6 +566,16 @@
     body.light .site-switch-chip { color: #64748b; background: rgba(0,0,0,0.04); }
     body.light .site-switch-chip.active-site { background: rgba(99,102,241,0.1); color: #4f46e5; }
 
+    /* TYPING CURSOR */
+    .typing-cursor {
+      display: inline-block; width: 2px; height: 1em;
+      background: #818cf8; margin-left: 2px;
+      vertical-align: text-bottom;
+      animation: blink 0.7s infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+    body.light .typing-cursor { background: #6366f1; }
+
     /* VOICE BUTTON */
     .voice-btn {
       width: 40px; height: 40px;
@@ -971,7 +981,56 @@
   }
 
   function appendMsg(role, text) {
-    appendMsgNoSave(role, text);
+    const chatWrap = document.getElementById('chat-wrap');
+    const id = 'msg-' + Date.now() + Math.random();
+    const isUser = role === 'user';
+    if (isUser) {
+      const formatted = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      chatWrap.innerHTML += `
+        <div class="msg msg-user" id="${id}">
+          <div class="msg-avatar">👤</div>
+          <div><div class="msg-bubble">${formatted}</div></div>
+        </div>`;
+      chatWrap.scrollTop = chatWrap.scrollHeight;
+    } else {
+      // AI message — typewriter effect
+      chatWrap.innerHTML += `
+        <div class="msg msg-ai" id="${id}">
+          <div class="msg-avatar">🤖</div>
+          <div>
+            <div class="msg-bubble" id="bubble-${id}"><span class="typing-cursor"></span></div>
+            <button class="copy-btn" id="copy-${id}" style="display:none" onclick="copyText('${id}')">📋 Copy</button>
+          </div>
+        </div>`;
+      chatWrap.scrollTop = chatWrap.scrollHeight;
+      typewriterEffect(id, text);
+    }
+  }
+
+  function typewriterEffect(id, text) {
+    const bubble = document.getElementById('bubble-' + id);
+    const copyBtn = document.getElementById('copy-' + id);
+    if (!bubble) return;
+    // Strip markdown for typing, then format at end
+    let i = 0;
+    const speed = 18; // ms per char
+    bubble.innerHTML = '<span class="typing-cursor"></span>';
+
+    const interval = setInterval(() => {
+      if (i < text.length) {
+        const current = text.substring(0, i + 1);
+        const formatted = current.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        bubble.innerHTML = formatted + '<span class="typing-cursor"></span>';
+        i++;
+        const chatWrap = document.getElementById('chat-wrap');
+        chatWrap.scrollTop = chatWrap.scrollHeight;
+      } else {
+        clearInterval(interval);
+        const formatted = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        bubble.innerHTML = formatted;
+        if (copyBtn) copyBtn.style.display = 'inline-block';
+      }
+    }, speed);
   }
 
   function appendMsgNoSave(role, text) {
