@@ -583,9 +583,45 @@
 
 <script>
   const BACKEND = 'http://127.0.0.1:8000';
-  let chatHistory = [];
   let siteHistory = JSON.parse(localStorage.getItem('siteHistory') || '[]');
   let currentSite = localStorage.getItem('currentSite') || null;
+  // Feature 1: Chat history persisted in localStorage per site
+  let chatHistory = JSON.parse(localStorage.getItem('chatHistory_' + currentSite) || '[]');
+
+  // ── SAVE & LOAD CHAT HISTORY ──
+  function saveChatHistory() {
+    if (currentSite) {
+      localStorage.setItem('chatHistory_' + currentSite, JSON.stringify(chatHistory));
+    }
+  }
+
+  function loadChatHistory() {
+    chatHistory = JSON.parse(localStorage.getItem('chatHistory_' + currentSite) || '[]');
+    const chatWrap = document.getElementById('chat-wrap');
+    if (chatHistory.length === 0) {
+      chatWrap.innerHTML = `<div class="empty-state" id="empty-state"><div class="empty-icon">🤖</div><p>Ask anything about the indexed website</p></div>`;
+      return;
+    }
+    chatWrap.innerHTML = '';
+    chatHistory.forEach(item => {
+      appendMsgNoSave('user', item.q);
+      appendMsgNoSave('ai', item.a);
+    });
+    chatWrap.scrollTop = chatWrap.scrollHeight;
+  }
+
+  // Feature 2: Load saved stats on startup
+  function loadSavedStats() {
+    if (!currentSite) return;
+    const pages = localStorage.getItem('stat_pages_' + currentSite);
+    const chunks = localStorage.getItem('stat_chunks_' + currentSite);
+    if (pages && chunks) {
+      document.getElementById('stat-pages-val').textContent = pages + ' pages scraped';
+      document.getElementById('stat-chunks-val').textContent = chunks + ' chunks created';
+      document.getElementById('stat-pages').style.display = 'inline-flex';
+      document.getElementById('stat-chunks').style.display = 'inline-flex';
+    }
+  }
 
   // On load
   window.onload = () => {
@@ -593,6 +629,8 @@
       document.getElementById('site-badge').style.display = 'flex';
       document.getElementById('site-badge-url').textContent = currentSite;
       document.getElementById('url-input').value = currentSite;
+      loadSavedStats();
+      loadChatHistory();
     }
     renderHistory();
   };
@@ -695,6 +733,9 @@
 
       if (res.ok) {
         stopProgress(true, `✅ Indexed! ${data.pages_scraped} pages · ${data.chunks_created} chunks`);
+        // Feature 2: Save stats to localStorage
+        localStorage.setItem('stat_pages_' + url, data.pages_scraped);
+        localStorage.setItem('stat_chunks_' + url, data.chunks_created);
         document.getElementById('stat-pages-val').textContent = data.pages_scraped + ' pages scraped';
         document.getElementById('stat-chunks-val').textContent = data.chunks_created + ' chunks created';
         document.getElementById('stat-pages').style.display = 'inline-flex';
@@ -705,7 +746,9 @@
         localStorage.setItem('currentSite', url);
         addToHistory(url);
         showToast('✅ Website indexed! Go to Ask tab.');
+        // Feature 1: Clear old chat history for new site
         chatHistory = [];
+        localStorage.removeItem('chatHistory_' + url);
         document.getElementById('chat-wrap').innerHTML = `
           <div class="empty-state" id="empty-state">
             <div class="empty-icon">🤖</div>
@@ -764,6 +807,7 @@
       const answer = data.answer || 'No answer received.';
       appendMsg('ai', answer);
       chatHistory.push({ q, a: answer });
+      saveChatHistory();
     } catch (e) {
       document.getElementById(typingId)?.remove();
       appendMsg('ai', '❌ Could not connect to backend.');
@@ -774,8 +818,12 @@
   }
 
   function appendMsg(role, text) {
+    appendMsgNoSave(role, text);
+  }
+
+  function appendMsgNoSave(role, text) {
     const chatWrap = document.getElementById('chat-wrap');
-    const id = 'msg-' + Date.now();
+    const id = 'msg-' + Date.now() + Math.random();
     const isUser = role === 'user';
     const formatted = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     chatWrap.innerHTML += `
