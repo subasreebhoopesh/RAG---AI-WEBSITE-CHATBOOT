@@ -13,6 +13,90 @@
       color: #e2e8f0;
       min-height: 100vh;
       overflow-x: hidden;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* ── LIGHT MODE ── */
+    body.light {
+      background: #f1f5f9;
+      color: #1e293b;
+    }
+    body.light::before {
+      background: radial-gradient(circle, rgba(99,102,241,0.06) 0%, transparent 70%);
+    }
+    body.light .card {
+      background: rgba(255,255,255,0.85);
+      border-color: rgba(0,0,0,0.08);
+    }
+    body.light .card:hover { border-color: rgba(99,102,241,0.4); }
+    body.light .card-title { color: #6366f1; }
+    body.light input[type="text"] {
+      background: rgba(0,0,0,0.04);
+      border-color: rgba(0,0,0,0.12);
+      color: #1e293b;
+    }
+    body.light input[type="text"]::placeholder { color: #94a3b8; }
+    body.light .chip {
+      background: rgba(0,0,0,0.04);
+      border-color: rgba(0,0,0,0.08);
+      color: #334155;
+    }
+    body.light .chip:hover {
+      background: rgba(99,102,241,0.08);
+      color: #4f46e5;
+    }
+    body.light .msg-ai .msg-bubble {
+      background: rgba(0,0,0,0.05);
+      border-color: rgba(0,0,0,0.08);
+      color: #334155;
+    }
+    body.light .msg-user .msg-bubble { color: #e2e8f0; }
+    body.light .ask-wrap {
+      background: rgba(0,0,0,0.04);
+      border-color: rgba(0,0,0,0.1);
+    }
+    body.light .ask-wrap input { color: #1e293b; }
+    body.light .bottom-nav {
+      background: rgba(241,245,249,0.95);
+      border-top-color: rgba(0,0,0,0.08);
+    }
+    body.light .nav-item { color: #94a3b8; }
+    body.light .nav-item.active { color: #6366f1; }
+    body.light .site-badge {
+      background: rgba(99,102,241,0.08);
+      border-color: rgba(99,102,241,0.2);
+    }
+    body.light .empty-state { color: #94a3b8; }
+    body.light .copy-btn { color: #94a3b8; border-color: rgba(0,0,0,0.1); }
+    body.light .header p { color: #94a3b8; }
+    body.light .toast {
+      background: rgba(255,255,255,0.95);
+      color: #1e293b;
+      border-color: rgba(0,0,0,0.1);
+    }
+
+    /* THEME TOGGLE BUTTON */
+    .theme-btn {
+      position: fixed;
+      top: 16px; right: 16px;
+      width: 40px; height: 40px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 200;
+      transition: all 0.2s;
+    }
+    .theme-btn:hover {
+      background: rgba(99,102,241,0.15);
+      border-color: rgba(99,102,241,0.4);
+      transform: scale(1.05);
+    }
+    body.light .theme-btn {
+      background: rgba(0,0,0,0.06);
+      border-color: rgba(0,0,0,0.1);
     }
 
     /* Background glow */
@@ -531,7 +615,10 @@
     </div>
 
     <div class="card">
-      <div class="card-title">💬 Chat</div>
+      <div class="card-title" style="justify-content:space-between;">
+        <span>💬 Chat</span>
+        <button class="copy-btn" onclick="downloadChat()" title="Download chat">⬇️ Download</button>
+      </div>
 
       <!-- Chat history -->
       <div class="chat-wrap" id="chat-wrap">
@@ -566,6 +653,9 @@
 
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
+
+<!-- THEME TOGGLE -->
+<button class="theme-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle theme">🌙</button>
 
 <!-- BOTTOM NAV -->
 <div class="bottom-nav">
@@ -870,6 +960,39 @@
     document.getElementById('url-input').value = url;
     showSection('index');
     showToast('Click Index to re-index this site');
+  }
+
+  // ── DARK/LIGHT MODE ──
+  function toggleTheme() {
+    const isLight = document.body.classList.toggle('light');
+    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    document.getElementById('theme-btn').textContent = isLight ? '☀️' : '🌙';
+  }
+
+  // Apply saved theme on load
+  if (localStorage.getItem('theme') === 'light') {
+    document.body.classList.add('light');
+    document.getElementById('theme-btn').textContent = '☀️';
+  }
+
+  // ── DOWNLOAD CHAT ──
+  function downloadChat() {
+    if (!chatHistory.length) { showToast('⚠️ No chat to download!'); return; }
+    const site = currentSite || 'unknown';
+    let text = `CrawlAI RAG - Chat Export\n`;
+    text += `Website: ${site}\n`;
+    text += `Date: ${new Date().toLocaleString()}\n`;
+    text += `${'─'.repeat(50)}\n\n`;
+    chatHistory.forEach((item, i) => {
+      text += `Q${i+1}: ${item.q}\n`;
+      text += `A${i+1}: ${item.a}\n\n`;
+    });
+    const blob = new Blob([text], { type: 'text/plain' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `crawlai-chat-${Date.now()}.txt`;
+    a.click();
+    showToast('✅ Chat downloaded!');
   }
 </script>
 </body>
