@@ -1,176 +1,119 @@
-# CrawlAI RAG
+# 🕷️ CrawlAI RAG — AI Website Chatbot
 
-<p align="center">
-  <img 
-    src="https://github.com/user-attachments/assets/4a7ead5e-cf4a-427d-b225-5b853966e0da"
-    width="320"
-    style="border-radius: 50%;"
-  />
-</p>
+> Crawl any website and ask questions using AI — powered by RAG (Retrieval Augmented Generation)
 
-
-**CrawlAI RAG** is an AI-powered website intelligence platform that allows users to **crawl entire websites, index their content, and ask natural-language questions** using **Retrieval-Augmented Generation (RAG)**.
-
-It transforms static websites into **queryable knowledge bases**.
+![Python](https://img.shields.io/badge/Python-3.10+-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-Backend-green)
+![LangChain](https://img.shields.io/badge/LangChain-RAG-orange)
+![Groq](https://img.shields.io/badge/Groq-LLaMA3-purple)
 
 ---
 
-## Key Features
+## ✨ Features
 
-### Website Crawling
-- Crawls all internal pages of a website  
-- Extracts clean, readable text  
-
-### RAG-Based Question Answering
-- Uses vector embeddings + LLM  
-- Answers are grounded in website content  
-- Minimizes hallucinations  
-
-### Multi-Website Indexing
-- Index multiple websites  
-- All content stored in a shared vector database  
-
-### Fast & Scalable Backend
-- Built with FastAPI  
-- ChromaDB for vector storage  
-
-### Modern Frontend
-- Built with React + Vite  
-- Styled with Tailwind CSS  
-- Responsive design with glassmorphism effects  
-- Smooth animations with Framer Motion  
-- Component-based architecture  
-
-### Secure Configuration
-- Environment variables via `.env`  
-- API keys are never committed to GitHub  
+- 🌐 Crawl any website using Playwright (JS rendering supported)
+- 🧠 Embed content using HuggingFace sentence-transformers
+- 💾 Store vectors in ChromaDB
+- 💬 Ask questions in a chat-style UI
+- ⚡ Answers powered by Groq LLaMA 3.3 70B
+- 📱 Mobile + Desktop friendly HTML/CSS/JS frontend
+- 🕐 Recent sites history (localStorage)
+- 📋 Copy answer button
+- 📊 Pages scraped & chunks created stats
 
 ---
 
-## Tech Stack
+## 🚀 How to Run
 
-| Layer | Technology |
-|------|-----------|
-| Backend | FastAPI |
-| Frontend | React + Vite + Tailwind CSS |
-| UI Library | Framer Motion, Lucide Icons |
-| HTTP Client | Axios |
-| Routing | React Router |
-| AI / RAG | LangChain |
-| Vector Database | ChromaDB |
-| Embeddings | Sentence-Transformers |
-| LLM | Groq (LLaMA 3.3 70B) |
-| Web Scraping | BeautifulSoup4 & Playwright |
-| Configuration | python-dotenv |
-
----
-
-## Installation & Setup
-
-### Prerequisites
-- Python 3.8+
-- Node.js 18+
-- Groq API key
-
-### Backend Setup
-
-1. **Clone the repository**
+### 1. Clone the repo
 ```bash
-git clone <repository-url>
-cd CrawlAI-RAG-main
+git clone https://github.com/subasreebhoopesh/RAG-AI-WEBSITE-CHATBOT.git
+cd RAG-AI-WEBSITE-CHATBOT
 ```
 
-2. **Install Python dependencies**
+### 2. Create virtual environment
+```bash
+python -m venv venv
+venv\Scripts\activate        # Windows
+source venv/bin/activate     # Mac/Linux
+```
+
+### 3. Install dependencies
 ```bash
 pip install -r requirements.txt
+playwright install chromium
 ```
 
-3. **Configure environment variables**
-Create a `.env` file in the root directory:
-```env
+### 4. Setup environment variables
+```bash
+# Create .env file and add your Groq API key
+# Get free API key from https://console.groq.com
 GROQ_API_KEY=your_groq_api_key_here
 ```
 
-4. **Start the backend server**
+### 5. Run the backend
 ```bash
-python main.py
-```
-The backend will run on `http://127.0.0.1:8000`
-
-### Frontend Setup
-
-1. **Navigate to the frontend directory**
-```bash
-cd frontend
+uvicorn main:app --host 127.0.0.1 --port 8000 --reload
 ```
 
-2. **Install Node dependencies**
-```bash
-npm install
+### 6. Open the UI
+Open your browser and go to:
 ```
-
-3. **Start the development server**
-```bash
-npm run dev
+http://127.0.0.1:8000/ui
 ```
-The frontend will run on `http://localhost:5173`
-
-## Usage Guide
-
-### 1. Index a Website
-1. Navigate to the **Index Website** page
-2. Enter a website URL (e.g., `https://example.com`)
-3. Click **Index Website**
-4. Wait for the indexing process to complete
-5. Website content is crawled, chunked, and embedded
-
-### 2. Ask Questions
-1. Navigate to the **Ask Questions** page
-2. Use quick questions or type your own question
-3. Click **Send** or press Enter
-4. Get AI-powered answers based on indexed content
-
-Example questions:
-- What is this website about?
-- List all services mentioned
-- Who is the author?
-
-The system returns **accurate, grounded answers** based only on the indexed website content.
 
 ---
 
-## How It Works
+## 🛠️ Tech Stack
 
-1. Website is crawled and text is extracted  
-2. Text is split into manageable chunks  
-3. Embeddings are generated and stored in ChromaDB  
-4. User query retrieves the most relevant chunks  
-5. LLM generates an answer using retrieved context  
-
-This is **true Retrieval-Augmented Generation (RAG)**.
-
----
-
-## Use Cases
-
-- Website documentation Q&A  
-- Internal knowledge bases  
-- Research and analysis  
-- Client website intelligence  
-- Portfolio / demo RAG application  
+| Layer | Technology |
+|---|---|
+| Frontend | HTML, CSS, JavaScript |
+| Backend | FastAPI (Python) |
+| Crawler | Playwright |
+| Embeddings | sentence-transformers/all-MiniLM-L6-v2 |
+| Vector DB | ChromaDB |
+| LLM | Groq — LLaMA 3.3 70B |
+| RAG Pipeline | LangChain |
 
 ---
 
-## Author
+## 📁 Project Structure
 
-**CrawlAI RAG**  
-Built by **Ankit Kumar Nayak**
+```
+CrawlAI-RAG/
+├── main.py              # FastAPI backend
+├── app.py               # Streamlit frontend (legacy)
+├── index.html           # HTML/CSS/JS frontend (main)
+├── requirements.txt
+├── .env.example
+├── scraper/
+│   └── crawler.py       # Playwright web crawler
+└── rag/
+    ├── chunker.py        # Text chunking
+    ├── vectorstore.py    # ChromaDB vector store
+    └── qa.py             # QA chain with Groq LLM
+```
 
 ---
 
-## Support
+## 💡 Usage
 
-If you like this project:
-- Give it a **star**
-- Fork it
-- Contribute or suggest improvements
+1. Open `http://127.0.0.1:8000/ui`
+2. Enter any website URL (e.g. `https://quotes.toscrape.com`)
+3. Click **Index** and wait for crawling to complete
+4. Go to **Ask** tab
+5. Ask anything about the website!
+
+---
+
+## ⚠️ Notes
+
+- `.env` file is gitignored — never commit your API key
+- Google Search URLs cannot be crawled
+- Large websites may take 1-2 minutes to index
+- Free Groq API key available at [console.groq.com](https://console.groq.com)
+
+---
+
+Made with ❤️ for Hackathon
