@@ -1,6 +1,31 @@
 # 🤖 SiteGPT — AI Website Chatbot
 
-> Crawl any website and ask questions using AI — powered by RAG (Retrieval Augmented Generation)
+> **Crawl any website and ask questions using AI** — powered by RAG (Retrieval Augmented Generation)
+
+**🏆 Built for Hackathon | AI Track**
+
+![Python](https://img.shields.io/badge/Python-3.10+-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-Backend-green)
+![LangChain](https://img.shields.io/badge/LangChain-RAG-orange)
+![Groq](https://img.shields.io/badge/Groq-LLaMA3.3--70B-purple)
+![ChromaDB](https://img.shields.io/badge/ChromaDB-VectorDB-red)
+![Playwright](https://img.shields.io/badge/Playwright-Crawler-blue)
+
+**Topics:** `rag` `ai-chatbot` `fastapi` `chromadb` `groq` `llama3` `playwright` `python` `langchain` `retrieval-augmented-generation`
+
+---
+
+## 🚀 What is SiteGPT?
+
+SiteGPT solves a real problem — **reading and understanding any website manually takes too much time.**
+
+With SiteGPT:
+1. Paste any website URL
+2. AI crawls and indexes the entire site
+3. Ask questions in natural language
+4. Get instant, accurate answers
+
+**Use cases:** Research, competitor analysis, portfolio review, documentation Q&A, news summarization
 
 ![Python](https://img.shields.io/badge/Python-3.10+-blue)
 ![FastAPI](https://img.shields.io/badge/FastAPI-Backend-green)
