@@ -132,3 +132,59 @@ def ask(question: str):
         return {"answer": result["result"]}
 
     return {"answer": str(result)}
+
+
+@app.post("/summary")
+def summary(url: str = None):
+    site = url or LAST_WEBSITE
+    if not site:
+        return JSONResponse(status_code=400, content={"error": "No website indexed yet."})
+    try:
+        qa_chain = get_qa_chain(site)
+        result = qa_chain.invoke(
+            "Give a structured summary of this website. Include: 1) Website name and purpose, 2) Main topics covered, 3) Key features or services, 4) Target audience. Format clearly with bullet points."
+        )
+        answer = result["result"] if isinstance(result, dict) and "result" in result else str(result)
+        return {"summary": answer, "url": site}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
+
+@app.post("/followup")
+def followup(answer: str):
+    from langchain_groq import ChatGroq
+    try:
+        llm = ChatGroq(model_name="llama-3.3-70b-versatile", temperature=0.5)
+        prompt = f"""Based on this AI answer about a website, suggest exactly 3 short follow-up questions a user might want to ask next.
+
+Answer: {answer}
+
+Rules:
+- Each question must be short (under 10 words)
+- Questions must be directly related to the answer
+- Return ONLY the 3 questions, one per line, no numbering, no extra text
+
+Questions:"""
+        result = llm.invoke(prompt)
+        lines = [l.strip() for l in result.content.strip().split("\n") if l.strip()][:3]
+        return {"questions": lines}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
+
+@app.post("/compare")
+def compare(url1: str, url2: str, question: str = "What is this website about and what are its main features?"):
+    try:
+        qa1 = get_qa_chain(url1)
+        qa2 = get_qa_chain(url2)
+        r1 = qa1.invoke(question)
+        r2 = qa2.invoke(question)
+        a1 = r1["result"] if isinstance(r1, dict) and "result" in r1 else str(r1)
+        a2 = r2["result"] if isinstance(r2, dict) and "result" in r2 else str(r2)
+        return {
+            "question": question,
+            "site1": {"url": url1, "answer": a1},
+            "site2": {"url": url2, "answer": a2}
+        }
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})

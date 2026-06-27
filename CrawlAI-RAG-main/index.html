@@ -661,6 +661,12 @@
         <div class="dot"></div>
         <span id="site-badge-url">No site indexed</span>
       </div>
+
+      <!-- Website Summary Card -->
+      <div id="summary-card" style="display:none; margin-top:14px; background:rgba(99,102,241,0.06); border:1px solid rgba(99,102,241,0.2); border-radius:14px; padding:16px;">
+        <div style="font-size:0.72rem; color:#818cf8; font-weight:600; text-transform:uppercase; letter-spacing:1px; margin-bottom:10px;">📋 Website Summary</div>
+        <div id="summary-text" style="font-size:0.85rem; color:#cbd5e1; line-height:1.6;"></div>
+      </div>
     </div>
   </div>
 
@@ -713,6 +719,12 @@
         <button class="voice-btn" id="voice-btn" onclick="toggleVoice()" title="Voice input">🎤</button>
         <button class="ask-send" id="ask-send-btn" onclick="sendQuestion()">➤</button>
       </div>
+
+      <!-- Follow-up Questions -->
+      <div id="followup-wrap" style="display:none; margin-top:12px;">
+        <div style="font-size:0.72rem; color:#64748b; margin-bottom:8px;">💡 Suggested questions:</div>
+        <div id="followup-chips" style="display:flex; flex-direction:column; gap:6px;"></div>
+      </div>
     </div>
   </div>
 
@@ -724,6 +736,29 @@
         <div class="empty-state">
           <div class="empty-icon">📭</div>
           <p>No sites indexed yet</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMPARE TWO WEBSITES -->
+    <div class="card">
+      <div class="card-title">⚖️ Compare Two Websites</div>
+      <input type="text" id="compare-url1" placeholder="Site 1: https://site1.com" style="margin-bottom:8px;" />
+      <input type="text" id="compare-url2" placeholder="Site 2: https://site2.com" style="margin-bottom:8px;" />
+      <input type="text" id="compare-q" placeholder="Question to compare (optional)" style="margin-bottom:12px;" />
+      <button class="btn btn-primary" onclick="compareWebsites()" style="width:100%;">⚖️ Compare</button>
+      <div id="compare-result" style="margin-top:14px; display:none;">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div class="chip" style="border-radius:12px; padding:14px;">
+            <strong style="color:#818cf8; font-size:0.78rem;">🌐 Site 1</strong>
+            <div id="compare-url1-label" style="font-size:0.72rem; color:#64748b; margin:4px 0 8px;"></div>
+            <div id="compare-ans1" style="font-size:0.85rem; line-height:1.5;"></div>
+          </div>
+          <div class="chip" style="border-radius:12px; padding:14px;">
+            <strong style="color:#a78bfa; font-size:0.78rem;">🌐 Site 2</strong>
+            <div id="compare-url2-label" style="font-size:0.72rem; color:#64748b; margin:4px 0 8px;"></div>
+            <div id="compare-ans2" style="font-size:0.85rem; line-height:1.5;"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -917,6 +952,8 @@
         addToHistory(url);
         renderSwitcher();
         showToast('✅ Website indexed! Go to Ask tab.');
+        // Load summary automatically
+        loadSummary(url);
         // Feature 1: Clear old chat history for new site
         chatHistory = [];
         localStorage.removeItem('chatHistory_' + url);
@@ -979,6 +1016,8 @@
       appendMsg('ai', answer);
       chatHistory.push({ q, a: answer });
       saveChatHistory();
+      // Load follow-up questions
+      loadFollowup(answer);
     } catch (e) {
       document.getElementById(typingId)?.remove();
       appendMsg('ai', '❌ Could not connect to backend.');
@@ -1236,6 +1275,72 @@
     win.document.close();
     setTimeout(() => { win.print(); }, 500);
     showToast('🖼️ Save as PDF/Image from print dialog!');
+  }
+
+  // ── WEBSITE SUMMARY ──
+  async function loadSummary(url) {
+    const card = document.getElementById('summary-card');
+    const text = document.getElementById('summary-text');
+    card.style.display = 'block';
+    text.innerHTML = '<span style="color:#64748b">⏳ Generating summary...</span>';
+    try {
+      const res = await fetch(`${BACKEND}/summary?url=${encodeURIComponent(url)}`, { method: 'POST' });
+      const data = await res.json();
+      if (data.summary) {
+        text.innerHTML = formatText(data.summary);
+      } else {
+        text.innerHTML = '<span style="color:#64748b">Could not generate summary.</span>';
+      }
+    } catch(e) {
+      text.innerHTML = '<span style="color:#f87171">Failed to load summary.</span>';
+    }
+  }
+
+  // ── FOLLOW-UP QUESTIONS ──
+  async function loadFollowup(answer) {
+    try {
+      const res = await fetch(`${BACKEND}/followup?answer=${encodeURIComponent(answer)}`, { method: 'POST' });
+      const data = await res.json();
+      if (data.questions && data.questions.length) {
+        const wrap = document.getElementById('followup-wrap');
+        const chips = document.getElementById('followup-chips');
+        wrap.style.display = 'block';
+        chips.innerHTML = data.questions.map(q => `
+          <div class="chip" onclick="askQuestion('${q.replace(/'/g,"\\'")}') "
+            style="padding:8px 12px; font-size:0.82rem; cursor:pointer;">
+            💬 ${q}
+          </div>`).join('');
+      }
+    } catch(e) { /* silent fail */ }
+  }
+
+  // ── COMPARE TWO WEBSITES ──
+  async function compareWebsites() {
+    const url1 = document.getElementById('compare-url1').value.trim();
+    const url2 = document.getElementById('compare-url2').value.trim();
+    const q = document.getElementById('compare-q').value.trim();
+    if (!url1 || !url2) { showToast('⚠️ Enter both website URLs!'); return; }
+
+    showToast('⏳ Comparing websites...');
+    document.getElementById('compare-result').style.display = 'none';
+
+    try {
+      let endpoint = `${BACKEND}/compare?url1=${encodeURIComponent(url1)}&url2=${encodeURIComponent(url2)}`;
+      if (q) endpoint += `&question=${encodeURIComponent(q)}`;
+      const res = await fetch(endpoint, { method: 'POST' });
+      const data = await res.json();
+
+      if (data.error) { showToast('❌ ' + data.error); return; }
+
+      document.getElementById('compare-url1-label').textContent = new URL(url1).hostname;
+      document.getElementById('compare-url2-label').textContent = new URL(url2).hostname;
+      document.getElementById('compare-ans1').innerHTML = formatText(data.site1.answer);
+      document.getElementById('compare-ans2').innerHTML = formatText(data.site2.answer);
+      document.getElementById('compare-result').style.display = 'block';
+      showToast('✅ Comparison ready!');
+    } catch(e) {
+      showToast('❌ Both sites must be indexed first!');
+    }
   }
 
   function toggleTheme() {
