@@ -1,4 +1,4 @@
-# 🕷️ CrawlAI RAG — AI Website Chatbot
+# 🤖 SiteGPT — AI Website Chatbot
 
 > Crawl any website and ask questions using AI — powered by RAG (Retrieval Augmented Generation)
 
