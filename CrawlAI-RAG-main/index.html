@@ -743,6 +743,7 @@
     <!-- COMPARE TWO WEBSITES -->
     <div class="card">
       <div class="card-title">⚖️ Compare Two Websites</div>
+      <div style="font-size:0.78rem; color:#64748b; margin-bottom:10px;">⚠️ Both sites must be indexed first from the Index tab</div>
       <input type="text" id="compare-url1" placeholder="Site 1: https://site1.com" style="margin-bottom:8px;" />
       <input type="text" id="compare-url2" placeholder="Site 2: https://site2.com" style="margin-bottom:8px;" />
       <input type="text" id="compare-q" placeholder="Question to compare (optional)" style="margin-bottom:12px;" />
@@ -1339,7 +1340,7 @@
       document.getElementById('compare-result').style.display = 'block';
       showToast('✅ Comparison ready!');
     } catch(e) {
-      showToast('❌ Both sites must be indexed first!');
+      showToast('❌ Both sites must be indexed first! Go to Index tab and index both sites.');
     }
   }
 
