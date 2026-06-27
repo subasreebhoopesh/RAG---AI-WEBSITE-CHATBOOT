@@ -34,9 +34,12 @@ It transforms static websites into **queryable knowledge bases**.
 - Built with FastAPI  
 - ChromaDB for vector storage  
 
-### Simple Frontend
-- Built with Streamlit  
-- Clean, single-query interface  
+### Modern Frontend
+- Built with React + Vite  
+- Styled with Tailwind CSS  
+- Responsive design with glassmorphism effects  
+- Smooth animations with Framer Motion  
+- Component-based architecture  
 
 ### Secure Configuration
 - Environment variables via `.env`  
@@ -49,7 +52,10 @@ It transforms static websites into **queryable knowledge bases**.
 | Layer | Technology |
 |------|-----------|
 | Backend | FastAPI |
-| Frontend | Streamlit |
+| Frontend | React + Vite + Tailwind CSS |
+| UI Library | Framer Motion, Lucide Icons |
+| HTTP Client | Axios |
+| Routing | React Router |
 | AI / RAG | LangChain |
 | Vector Database | ChromaDB |
 | Embeddings | Sentence-Transformers |
@@ -59,18 +65,75 @@ It transforms static websites into **queryable knowledge bases**.
 
 ---
 
+## Installation & Setup
+
+### Prerequisites
+- Python 3.8+
+- Node.js 18+
+- Groq API key
+
+### Backend Setup
+
+1. **Clone the repository**
+```bash
+git clone <repository-url>
+cd CrawlAI-RAG-main
+```
+
+2. **Install Python dependencies**
+```bash
+pip install -r requirements.txt
+```
+
+3. **Configure environment variables**
+Create a `.env` file in the root directory:
+```env
+GROQ_API_KEY=your_groq_api_key_here
+```
+
+4. **Start the backend server**
+```bash
+python main.py
+```
+The backend will run on `http://127.0.0.1:8000`
+
+### Frontend Setup
+
+1. **Navigate to the frontend directory**
+```bash
+cd frontend
+```
+
+2. **Install Node dependencies**
+```bash
+npm install
+```
+
+3. **Start the development server**
+```bash
+npm run dev
+```
+The frontend will run on `http://localhost:5173`
+
 ## Usage Guide
 
 ### 1. Index a Website
-1. Enter a website URL  
-2. Click **Index Website**  
-3. Website content is crawled, chunked, and embedded  
+1. Navigate to the **Index Website** page
+2. Enter a website URL (e.g., `https://example.com`)
+3. Click **Index Website**
+4. Wait for the indexing process to complete
+5. Website content is crawled, chunked, and embedded
 
 ### 2. Ask Questions
-Ask natural-language questions such as:
-- What is this website about?  
-- List all services mentioned  
-- Who is the author?  
+1. Navigate to the **Ask Questions** page
+2. Use quick questions or type your own question
+3. Click **Send** or press Enter
+4. Get AI-powered answers based on indexed content
+
+Example questions:
+- What is this website about?
+- List all services mentioned
+- Who is the author?
 
 The system returns **accurate, grounded answers** based only on the indexed website content.
 

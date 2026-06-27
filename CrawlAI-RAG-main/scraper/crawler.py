@@ -28,7 +28,7 @@ def progressive_scroll(page):
 # --------------------------------------------------
 # Wait until DOM stabilizes
 # --------------------------------------------------
-def wait_for_dom_stability(page, max_checks=10, delay_ms=700):
+def wait_for_dom_stability(page, max_checks=5, delay_ms=400):
     last_len = 0
     stable_rounds = 0
 
@@ -68,7 +68,7 @@ def extract_like_ctrl_a_copy(page):
 # --------------------------------------------------
 # Main crawler (COPY-PASTE PERFECT)
 # --------------------------------------------------
-def crawl_website(start_url: str, max_pages: int = 20):
+def crawl_website(start_url: str, max_pages: int = 5):
     visited = set()
     content_hashes = set()
     queue = [start_url]
@@ -115,8 +115,8 @@ def crawl_website(start_url: str, max_pages: int = 20):
             try:
                 print(f"Crawling: {clean_url}")
 
-                page.goto(clean_url, wait_until="domcontentloaded", timeout=120000)
-                page.wait_for_timeout(1000)
+                page.goto(clean_url, wait_until="domcontentloaded", timeout=30000)
+                page.wait_for_timeout(500)
                 
                 # Force render everything
                 progressive_scroll(page)

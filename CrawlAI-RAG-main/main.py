@@ -3,13 +3,26 @@ load_dotenv()
 
 import os
 from fastapi import FastAPI
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
+from fastapi.middleware.cors import CORSMiddleware
 from scraper.crawler import crawl_website
 from rag.chunker import chunk_text
 from rag.vectorstore import create_vectorstore
 from rag.qa import get_qa_chain
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+@app.get("/ui")
+def serve_ui():
+    return FileResponse("index.html")
 
 LAST_WEBSITE_FILE = "last_website.txt"
 
