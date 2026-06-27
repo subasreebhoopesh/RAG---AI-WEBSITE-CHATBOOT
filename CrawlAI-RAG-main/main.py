@@ -43,6 +43,34 @@ def save_last_website(url: str):
 LAST_WEBSITE = load_last_website()
 
 
+@app.get("/db-info")
+def db_info():
+    import os
+    base = "vector_db"
+    info = []
+    if os.path.exists(base):
+        for domain in os.listdir(base):
+            domain_path = os.path.join(base, domain)
+            if os.path.isdir(domain_path):
+                size = sum(
+                    os.path.getsize(os.path.join(dp, f))
+                    for dp, dn, filenames in os.walk(domain_path)
+                    for f in filenames
+                )
+                info.append({
+                    "domain": domain,
+                    "path": domain_path,
+                    "size_kb": round(size / 1024, 2)
+                })
+    return {
+        "vector_database": "ChromaDB",
+        "storage_location": os.path.abspath(base),
+        "indexed_sites": info,
+        "total_sites": len(info),
+        "current_site": LAST_WEBSITE
+    }
+
+
 @app.get("/")
 def root():
     return {"status": "Backend running"}
