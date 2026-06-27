@@ -534,10 +534,57 @@
     .section { display: none; }
     .section.active { display: block; }
 
-    /* Scrollbar for body */
+    /* Scrollbar */
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.2); border-radius: 6px; }
+
+    /* URL PREVIEW */
+    .url-preview {
+      display: none; margin-top: 12px;
+      background: rgba(99,102,241,0.06);
+      border: 1px solid rgba(99,102,241,0.15);
+      border-radius: 12px; padding: 10px 14px;
+      font-size: 0.83rem; color: #a5b4fc;
+      align-items: center; gap: 8px;
+    }
+    body.light .url-preview { color: #4f46e5; }
+
+    /* MULTI SITE SWITCHER */
+    .site-switcher { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .site-switch-chip {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px; padding: 5px 12px;
+      font-size: 0.78rem; color: #94a3b8;
+      cursor: pointer; transition: all 0.2s;
+      max-width: 180px; overflow: hidden;
+      text-overflow: ellipsis; white-space: nowrap;
+    }
+    .site-switch-chip:hover { background: rgba(99,102,241,0.12); border-color: rgba(99,102,241,0.4); color: #a5b4fc; }
+    .site-switch-chip.active-site { background: rgba(99,102,241,0.2); border-color: rgba(99,102,241,0.5); color: #a5b4fc; }
+    body.light .site-switch-chip { color: #64748b; background: rgba(0,0,0,0.04); }
+    body.light .site-switch-chip.active-site { background: rgba(99,102,241,0.1); color: #4f46e5; }
+
+    /* VOICE BUTTON */
+    .voice-btn {
+      width: 40px; height: 40px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px; color: #94a3b8;
+      font-size: 18px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s; flex-shrink: 0;
+    }
+    .voice-btn:hover { background: rgba(99,102,241,0.15); color: #a5b4fc; }
+    .voice-btn.recording {
+      background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.5); color: #f87171;
+      animation: pulse-red 1s infinite;
+    }
+    @keyframes pulse-red {
+      0%,100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.3); }
+      50% { box-shadow: 0 0 0 6px rgba(239,68,68,0); }
+    }
   </style>
 </head>
 <body>
@@ -557,8 +604,21 @@
     <div class="card">
       <div class="card-title">🌐 Index a Website</div>
       <div class="input-wrap">
-        <input type="text" id="url-input" placeholder="https://example.com" />
+        <input type="text" id="url-input" placeholder="https://example.com"
+          oninput="previewURL(this.value)" />
         <button class="btn btn-primary" id="index-btn" onclick="indexWebsite()">Index</button>
+      </div>
+
+      <!-- URL Preview -->
+      <div class="url-preview" id="url-preview">
+        <span>🌐</span>
+        <span id="url-preview-text"></span>
+      </div>
+
+      <!-- Multi-site switcher -->
+      <div id="site-switcher-wrap" style="display:none; margin-top:14px;">
+        <div class="card-title" style="margin-bottom:8px; font-size:0.7rem;">🔀 Switch Site</div>
+        <div class="site-switcher" id="site-switcher"></div>
       </div>
 
       <!-- Progress -->
@@ -632,6 +692,7 @@
       <div class="ask-wrap">
         <input type="text" id="ask-input" placeholder="Ask something about the website..."
           onkeydown="if(event.key==='Enter') sendQuestion()" />
+        <button class="voice-btn" id="voice-btn" onclick="toggleVoice()" title="Voice input">🎤</button>
         <button class="ask-send" id="ask-send-btn" onclick="sendQuestion()">➤</button>
       </div>
     </div>
@@ -723,6 +784,7 @@
       loadChatHistory();
     }
     renderHistory();
+    renderSwitcher();
   };
 
   // ── SECTION NAVIGATION ──
@@ -835,6 +897,7 @@
         currentSite = url;
         localStorage.setItem('currentSite', url);
         addToHistory(url);
+        renderSwitcher();
         showToast('✅ Website indexed! Go to Ask tab.');
         // Feature 1: Clear old chat history for new site
         chatHistory = [];
@@ -960,6 +1023,100 @@
     document.getElementById('url-input').value = url;
     showSection('index');
     showToast('Click Index to re-index this site');
+  }
+
+  // ── URL PREVIEW ──
+  let previewTimer = null;
+  function previewURL(val) {
+    clearTimeout(previewTimer);
+    const preview = document.getElementById('url-preview');
+    const previewText = document.getElementById('url-preview-text');
+    if (!val || (!val.startsWith('http://') && !val.startsWith('https://'))) {
+      preview.style.display = 'none'; return;
+    }
+    previewTimer = setTimeout(() => {
+      try {
+        const u = new URL(val);
+        previewText.textContent = u.hostname + u.pathname;
+        preview.style.display = 'flex';
+      } catch { preview.style.display = 'none'; }
+    }, 400);
+  }
+
+  // ── MULTI SITE SWITCHER ──
+  function renderSwitcher() {
+    const wrap = document.getElementById('site-switcher-wrap');
+    const switcher = document.getElementById('site-switcher');
+    if (siteHistory.length < 2) { wrap.style.display = 'none'; return; }
+    wrap.style.display = 'block';
+    switcher.innerHTML = siteHistory.map(url => {
+      const domain = (() => { try { return new URL(url).hostname; } catch { return url; } })();
+      const isActive = url === currentSite;
+      return `<div class="site-switch-chip ${isActive ? 'active-site' : ''}"
+        onclick="switchSite('${url}')" title="${url}">
+        ${isActive ? '✅ ' : ''}${domain}
+      </div>`;
+    }).join('');
+  }
+
+  function switchSite(url) {
+    if (url === currentSite) { showToast('Already on this site!'); return; }
+    currentSite = url;
+    localStorage.setItem('currentSite', url);
+    document.getElementById('url-input').value = url;
+    document.getElementById('site-badge-url').textContent = url;
+    document.getElementById('site-badge').style.display = 'flex';
+    loadSavedStats();
+    loadChatHistory();
+    renderSwitcher();
+    showToast('✅ Switched to ' + (() => { try { return new URL(url).hostname; } catch { return url; } })());
+    showSection('ask');
+  }
+
+  // ── VOICE INPUT ──
+  let recognition = null;
+  let isRecording = false;
+
+  function toggleVoice() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) { showToast('❌ Voice not supported in this browser'); return; }
+
+    if (isRecording) {
+      recognition.stop(); return;
+    }
+
+    recognition = new SpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => {
+      isRecording = true;
+      document.getElementById('voice-btn').classList.add('recording');
+      document.getElementById('voice-btn').textContent = '⏹️';
+      showToast('🎤 Listening...');
+    };
+
+    recognition.onresult = (e) => {
+      const transcript = e.results[0][0].transcript;
+      document.getElementById('ask-input').value = transcript;
+      showToast('✅ Got: ' + transcript);
+    };
+
+    recognition.onend = () => {
+      isRecording = false;
+      document.getElementById('voice-btn').classList.remove('recording');
+      document.getElementById('voice-btn').textContent = '🎤';
+    };
+
+    recognition.onerror = () => {
+      isRecording = false;
+      document.getElementById('voice-btn').classList.remove('recording');
+      document.getElementById('voice-btn').textContent = '🎤';
+      showToast('❌ Voice error. Try again.');
+    };
+
+    recognition.start();
   }
 
   // ── DARK/LIGHT MODE ──
