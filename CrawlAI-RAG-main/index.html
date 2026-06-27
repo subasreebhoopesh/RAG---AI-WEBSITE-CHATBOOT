@@ -194,6 +194,58 @@
 
     ::-webkit-scrollbar{width:5px;}
     ::-webkit-scrollbar-thumb{background:rgba(99,102,241,0.2);border-radius:6px;}
+
+    /* ── LANGUAGE SELECTOR ── */
+    .lang-select{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:7px 10px;color:#e2e8f0;font-size:0.8rem;cursor:pointer;outline:none;transition:all 0.2s;}
+    .lang-select:hover{border-color:rgba(99,102,241,0.4);}
+    .lang-select option{background:#1e1e3a;color:#e2e8f0;}
+    body.light .lang-select{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.12);color:#1e293b;}
+    body.light .lang-select option{background:#fff;color:#1e293b;}
+
+    /* ── AVATAR MODAL ── */
+    .avatar-modal{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:none;align-items:center;justify-content:center;z-index:9000;backdrop-filter:blur(4px);}
+    .avatar-modal.show{display:flex;}
+    .avatar-modal-card{background:#1a1a2e;border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:28px;width:100%;max-width:360px;box-shadow:0 24px 64px rgba(0,0,0,0.5);}
+    body.light .avatar-modal-card{background:#ffffff;border-color:rgba(0,0,0,0.08);}
+    .avatar-modal-title{font-size:0.75rem;font-weight:600;color:#6366f1;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;}
+    .avatar-preview{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:white;margin:0 auto 16px;transition:all 0.3s;}
+    .avatar-colors{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:16px;}
+    .color-dot{width:28px;height:28px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all 0.2s;}
+    .color-dot:hover,.color-dot.selected{border-color:white;transform:scale(1.15);}
+    .modal-input{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 14px;color:#e2e8f0;font-size:0.9rem;outline:none;margin-bottom:10px;}
+    body.light .modal-input{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.12);color:#1e293b;}
+    .modal-input:focus{border-color:#6366f1;}
+    .modal-btns{display:flex;gap:8px;margin-top:4px;}
+    .btn-save{flex:1;padding:10px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;border-radius:10px;color:white;font-size:0.88rem;font-weight:600;cursor:pointer;transition:all 0.2s;}
+    .btn-save:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(99,102,241,0.4);}
+    .btn-cancel{padding:10px 16px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#94a3b8;font-size:0.88rem;cursor:pointer;}
+
+    /* ── STATS DASHBOARD ── */
+    .stats-dashboard{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+    @media(max-width:700px){.stats-dashboard{grid-template-columns:repeat(2,1fr);}}
+    .stat-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:16px;text-align:center;transition:all 0.2s;}
+    .stat-card:hover{border-color:rgba(99,102,241,0.3);transform:translateY(-2px);}
+    .stat-card .s-icon{font-size:1.6rem;margin-bottom:6px;}
+    .stat-card .s-val{font-size:1.4rem;font-weight:700;background:linear-gradient(135deg,#a5b4fc,#c4b5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .stat-card .s-label{font-size:0.72rem;color:#64748b;margin-top:3px;}
+    body.light .stat-card{background:rgba(255,255,255,0.9);border-color:rgba(0,0,0,0.08);}
+
+    /* ── NOTIFICATION BELL ── */
+    .notif-btn{position:relative;width:36px;height:36px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:10px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+    .notif-btn:hover{background:rgba(99,102,241,0.15);}
+    .notif-badge{position:absolute;top:-4px;right:-4px;width:16px;height:16px;background:#ef4444;border-radius:50%;font-size:0.6rem;color:white;display:none;align-items:center;justify-content:center;font-weight:700;}
+    .notif-badge.show{display:flex;}
+    .notif-dropdown{position:absolute;top:52px;right:0;width:280px;background:#1a1a2e;border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:12px;box-shadow:0 16px 40px rgba(0,0,0,0.4);display:none;z-index:200;}
+    .notif-dropdown.show{display:block;}
+    body.light .notif-dropdown{background:#ffffff;border-color:rgba(0,0,0,0.08);}
+    .notif-header{font-size:0.72rem;font-weight:600;color:#6366f1;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;}
+    .notif-item{padding:10px;background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.12);border-radius:10px;margin-bottom:6px;font-size:0.8rem;color:#cbd5e1;line-height:1.4;}
+    .notif-item:last-child{margin-bottom:0;}
+    .notif-time{font-size:0.68rem;color:#475569;margin-top:3px;}
+    .notif-empty{text-align:center;color:#475569;font-size:0.82rem;padding:12px 0;}
+    .clear-notif{font-size:0.7rem;color:#6366f1;cursor:pointer;background:none;border:none;padding:0;}
+    .clear-notif:hover{text-decoration:underline;}
+    body.light .notif-item{color:#334155;}
   </style>
 </head>
 <body>
@@ -219,12 +271,13 @@
     </button>
   </div>
   <div class="sidebar-bottom">
-    <div class="user-card">
+    <div class="user-card" onclick="openAvatarModal()" style="cursor:pointer;" title="Edit Profile">
       <div class="user-avatar" id="user-avatar-letter">S</div>
       <div class="user-info">
         <div class="user-name" id="sidebar-username">User</div>
         <div class="user-email" id="sidebar-useremail">sitegpt@ai.com</div>
       </div>
+      <span style="font-size:0.7rem;color:#475569;">✏️</span>
     </div>
   </div>
 </div>
@@ -235,6 +288,32 @@
   <div class="topbar">
     <span class="topbar-title" id="topbar-title">Welcome to SiteGPT</span>
     <div class="topbar-right">
+      <!-- Language Selector -->
+      <select class="lang-select" id="lang-select" onchange="setLanguage(this.value)" title="Response Language">
+        <option value="English">🌐 English</option>
+        <option value="Tamil">🇮🇳 Tamil</option>
+        <option value="Hindi">🇮🇳 Hindi</option>
+        <option value="French">🇫🇷 French</option>
+        <option value="Spanish">🇪🇸 Spanish</option>
+        <option value="Arabic">🇸🇦 Arabic</option>
+        <option value="German">🇩🇪 German</option>
+        <option value="Japanese">🇯🇵 Japanese</option>
+        <option value="Chinese">🇨🇳 Chinese</option>
+      </select>
+      <!-- Notification Bell -->
+      <div style="position:relative;">
+        <button class="notif-btn" id="notif-btn" onclick="toggleNotifPanel()" title="Notifications">🔔
+          <span class="notif-badge" id="notif-badge">0</span>
+        </button>
+        <div class="notif-dropdown" id="notif-dropdown">
+          <div class="notif-header">
+            <span>🔔 Notifications</span>
+            <button class="clear-notif" onclick="clearNotifications()">Clear all</button>
+          </div>
+          <div id="notif-list"><div class="notif-empty">No notifications yet</div></div>
+        </div>
+      </div>
+      <!-- Theme -->
       <button class="theme-btn" onclick="toggleTheme()" title="Toggle theme">🌙</button>
     </div>
   </div>
@@ -249,6 +328,30 @@
           <p>Crawl any website and ask questions using AI</p>
         </div>
         <div class="welcome-planet">🪐</div>
+      </div>
+
+      <!-- Stats Dashboard -->
+      <div class="stats-dashboard" id="stats-dashboard">
+        <div class="stat-card">
+          <div class="s-icon">🌐</div>
+          <div class="s-val" id="sd-sites">0</div>
+          <div class="s-label">Sites Indexed</div>
+        </div>
+        <div class="stat-card">
+          <div class="s-icon">📄</div>
+          <div class="s-val" id="sd-pages">0</div>
+          <div class="s-label">Pages Scraped</div>
+        </div>
+        <div class="stat-card">
+          <div class="s-icon">🧩</div>
+          <div class="s-val" id="sd-chunks">0</div>
+          <div class="s-label">Chunks Created</div>
+        </div>
+        <div class="stat-card">
+          <div class="s-icon">💬</div>
+          <div class="s-val" id="sd-chats">0</div>
+          <div class="s-label">Questions Asked</div>
+        </div>
       </div>
 
       <!-- Index a Website (inline on Home) -->
@@ -407,6 +510,28 @@
 
 <div class="toast" id="toast"></div>
 
+<!-- ── AVATAR MODAL ── -->
+<div class="avatar-modal" id="avatar-modal">
+  <div class="avatar-modal-card">
+    <div class="avatar-modal-title">✏️ Edit Profile</div>
+    <div class="avatar-preview" id="avatar-preview-big">S</div>
+    <div class="avatar-colors" id="avatar-colors">
+      <div class="color-dot selected" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);" onclick="setAvatarColor('linear-gradient(135deg,#6366f1,#8b5cf6)',this)"></div>
+      <div class="color-dot" style="background:linear-gradient(135deg,#ec4899,#f43f5e);" onclick="setAvatarColor('linear-gradient(135deg,#ec4899,#f43f5e)',this)"></div>
+      <div class="color-dot" style="background:linear-gradient(135deg,#10b981,#059669);" onclick="setAvatarColor('linear-gradient(135deg,#10b981,#059669)',this)"></div>
+      <div class="color-dot" style="background:linear-gradient(135deg,#f59e0b,#d97706);" onclick="setAvatarColor('linear-gradient(135deg,#f59e0b,#d97706)',this)"></div>
+      <div class="color-dot" style="background:linear-gradient(135deg,#3b82f6,#06b6d4);" onclick="setAvatarColor('linear-gradient(135deg,#3b82f6,#06b6d4)',this)"></div>
+      <div class="color-dot" style="background:linear-gradient(135deg,#ef4444,#f97316);" onclick="setAvatarColor('linear-gradient(135deg,#ef4444,#f97316)',this)"></div>
+    </div>
+    <input class="modal-input" type="text" id="modal-name" placeholder="Your name" maxlength="20"/>
+    <input class="modal-input" type="text" id="modal-email" placeholder="Your email" maxlength="40"/>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeAvatarModal()">Cancel</button>
+      <button class="btn-save" onclick="saveAvatar()">💾 Save Profile</button>
+    </div>
+  </div>
+</div>
+
 <script>
   const BACKEND = 'http://127.0.0.1:8000';
   let siteHistory = JSON.parse(localStorage.getItem('siteHistory') || '[]');
@@ -523,6 +648,9 @@
         addToHistory(url);
         renderSwitcher();
         showToast('✅ Website indexed! Go to Chat tab.');
+        // Browser notification
+        addNotification(`✅ "${(() => { try { return new URL(url).hostname; } catch { return url; } })()}" indexed successfully! ${data.pages_scraped} pages, ${data.chunks_created} chunks.`);
+        updateStatsDashboard();
         loadSummary(url);
         chatHistory = [];
         localStorage.removeItem('chatHistory_'+url);
@@ -566,7 +694,7 @@
     chatWrap.innerHTML += `<div class="msg msg-ai" id="${typingId}"><div class="msg-avatar">🤖</div><div class="msg-bubble"><div class="typing"><span></span><span></span><span></span></div></div></div>`;
     chatWrap.scrollTop = chatWrap.scrollHeight;
     try {
-      const res = await fetch(`${BACKEND}/ask?question=${encodeURIComponent(q)}`, { method: 'POST' });
+      const res = await fetch(`${BACKEND}/ask?question=${encodeURIComponent(q + getLangInstruction())}`, { method: 'POST' });
       const data = await res.json();
       document.getElementById(typingId)?.remove();
       const answer = data.answer || 'No answer received.';
@@ -779,8 +907,138 @@
     document.querySelector('.theme-btn').textContent = isLight?'☀️':'🌙';
   }
 
+  // ── FEATURE 1: MULTI-LANGUAGE ──
+  let currentLang = localStorage.getItem('sitegpt_lang') || 'English';
+  function setLanguage(lang) {
+    currentLang = lang;
+    localStorage.setItem('sitegpt_lang', lang);
+    showToast(`🌐 Language set to ${lang}`);
+  }
+  function getLangInstruction() {
+    if (currentLang === 'English') return '';
+    return ` Please respond in ${currentLang} language.`;
+  }
+
+  // ── FEATURE 2: CUSTOM AVATAR ──
+  let avatarColor = localStorage.getItem('avatar_color') || 'linear-gradient(135deg,#6366f1,#8b5cf6)';
+  function openAvatarModal() {
+    const name = localStorage.getItem('user_name') || '';
+    const email = localStorage.getItem('user_email') || '';
+    document.getElementById('modal-name').value = name;
+    document.getElementById('modal-email').value = email;
+    document.getElementById('avatar-preview-big').style.background = avatarColor;
+    document.getElementById('avatar-preview-big').textContent = name ? name[0].toUpperCase() : 'U';
+    document.getElementById('avatar-modal').classList.add('show');
+  }
+  function closeAvatarModal() { document.getElementById('avatar-modal').classList.remove('show'); }
+  function setAvatarColor(color, el) {
+    avatarColor = color;
+    document.getElementById('avatar-preview-big').style.background = color;
+    document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+  function saveAvatar() {
+    const name = document.getElementById('modal-name').value.trim() || 'User';
+    const email = document.getElementById('modal-email').value.trim() || 'sitegpt@ai.com';
+    localStorage.setItem('user_name', name);
+    localStorage.setItem('user_email', email);
+    localStorage.setItem('avatar_color', avatarColor);
+    applyAvatar();
+    closeAvatarModal();
+    showToast('✅ Profile saved!');
+  }
+  function applyAvatar() {
+    const name = localStorage.getItem('user_name') || 'User';
+    const email = localStorage.getItem('user_email') || 'sitegpt@ai.com';
+    const color = localStorage.getItem('avatar_color') || 'linear-gradient(135deg,#6366f1,#8b5cf6)';
+    avatarColor = color;
+    const letter = name[0].toUpperCase();
+    document.getElementById('user-avatar-letter').textContent = letter;
+    document.getElementById('user-avatar-letter').style.background = color;
+    document.getElementById('sidebar-username').textContent = name;
+    document.getElementById('sidebar-useremail').textContent = email;
+  }
+
+  // ── FEATURE 3: NOTIFICATIONS ──
+  let notifications = JSON.parse(localStorage.getItem('sitegpt_notifs') || '[]');
+  function addNotification(msg) {
+    const n = { msg, time: new Date().toLocaleTimeString() };
+    notifications.unshift(n);
+    if (notifications.length > 10) notifications = notifications.slice(0,10);
+    localStorage.setItem('sitegpt_notifs', JSON.stringify(notifications));
+    renderNotifications();
+    // Browser notification
+    if (Notification.permission === 'granted') {
+      new Notification('SiteGPT', { body: msg, icon: '' });
+    }
+  }
+  function renderNotifications() {
+    const list = document.getElementById('notif-list');
+    const badge = document.getElementById('notif-badge');
+    if (!notifications.length) {
+      list.innerHTML = '<div class="notif-empty">No notifications yet</div>';
+      badge.classList.remove('show'); return;
+    }
+    list.innerHTML = notifications.map(n =>
+      `<div class="notif-item">${n.msg}<div class="notif-time">${n.time}</div></div>`).join('');
+    badge.textContent = notifications.length;
+    badge.classList.add('show');
+  }
+  function toggleNotifPanel() {
+    document.getElementById('notif-dropdown').classList.toggle('show');
+  }
+  function clearNotifications() {
+    notifications = [];
+    localStorage.removeItem('sitegpt_notifs');
+    renderNotifications();
+    document.getElementById('notif-dropdown').classList.remove('show');
+  }
+  // Close notif panel when clicking outside
+  document.addEventListener('click', (e) => {
+    const btn = document.getElementById('notif-btn');
+    const panel = document.getElementById('notif-dropdown');
+    if (btn && !btn.contains(e.target) && panel && !panel.contains(e.target)) {
+      panel.classList.remove('show');
+    }
+  });
+  // Request browser notification permission
+  function requestNotifPermission() {
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+  }
+
+  // ── FEATURE 4: STATS DASHBOARD ──
+  function updateStatsDashboard() {
+    const sites = siteHistory.length;
+    let totalPages = 0, totalChunks = 0;
+    siteHistory.forEach(url => {
+      totalPages += parseInt(localStorage.getItem('stat_pages_'+url) || 0);
+      totalChunks += parseInt(localStorage.getItem('stat_chunks_'+url) || 0);
+    });
+    let totalChats = 0;
+    siteHistory.forEach(url => {
+      const ch = JSON.parse(localStorage.getItem('chatHistory_'+url) || '[]');
+      totalChats += ch.length;
+    });
+    document.getElementById('sd-sites').textContent = sites;
+    document.getElementById('sd-pages').textContent = totalPages;
+    document.getElementById('sd-chunks').textContent = totalChunks;
+    document.getElementById('sd-chats').textContent = totalChats;
+  }
+
   window.onload = () => {
     if (localStorage.getItem('theme')==='light') { document.body.classList.add('light'); document.querySelector('.theme-btn').textContent='☀️'; }
+    // Apply saved language
+    const savedLang = localStorage.getItem('sitegpt_lang') || 'English';
+    currentLang = savedLang;
+    document.getElementById('lang-select').value = savedLang;
+    // Apply saved avatar
+    applyAvatar();
+    // Load notifications
+    renderNotifications();
+    // Request browser notification permission
+    requestNotifPermission();
     if (currentSite) {
       document.getElementById('site-badge').style.display='flex';
       document.getElementById('site-badge-url').textContent=currentSite;
@@ -789,6 +1047,8 @@
       loadSavedStats(); loadChatHistory();
     }
     renderHistory(); renderSwitcher();
+    // Update stats dashboard
+    updateStatsDashboard();
   };
 </script>
 </body>
