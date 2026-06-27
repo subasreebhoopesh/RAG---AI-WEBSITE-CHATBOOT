@@ -1319,28 +1319,31 @@
   async function compareWebsites() {
     const url1 = document.getElementById('compare-url1').value.trim();
     const url2 = document.getElementById('compare-url2').value.trim();
-    const q = document.getElementById('compare-q').value.trim();
+    const q = document.getElementById('compare-q').value.trim() || 'What is this website about?';
     if (!url1 || !url2) { showToast('⚠️ Enter both website URLs!'); return; }
 
     showToast('⏳ Comparing websites...');
     document.getElementById('compare-result').style.display = 'none';
 
     try {
-      let endpoint = `${BACKEND}/compare?url1=${encodeURIComponent(url1)}&url2=${encodeURIComponent(url2)}`;
-      if (q) endpoint += `&question=${encodeURIComponent(q)}`;
+      const endpoint = `${BACKEND}/compare?url1=${encodeURIComponent(url1)}&url2=${encodeURIComponent(url2)}&question=${encodeURIComponent(q)}`;
       const res = await fetch(endpoint, { method: 'POST' });
       const data = await res.json();
 
       if (data.error) { showToast('❌ ' + data.error); return; }
 
-      document.getElementById('compare-url1-label').textContent = new URL(url1).hostname;
-      document.getElementById('compare-url2-label').textContent = new URL(url2).hostname;
+      // Safe domain extraction
+      const getDomain = (u) => { try { return new URL(u).hostname; } catch { return u; } };
+
+      document.getElementById('compare-url1-label').textContent = getDomain(url1);
+      document.getElementById('compare-url2-label').textContent = getDomain(url2);
       document.getElementById('compare-ans1').innerHTML = formatText(data.site1.answer);
       document.getElementById('compare-ans2').innerHTML = formatText(data.site2.answer);
       document.getElementById('compare-result').style.display = 'block';
       showToast('✅ Comparison ready!');
     } catch(e) {
-      showToast('❌ Both sites must be indexed first! Go to Index tab and index both sites.');
+      showToast('❌ Error: ' + e.message);
+      console.error(e);
     }
   }
 
