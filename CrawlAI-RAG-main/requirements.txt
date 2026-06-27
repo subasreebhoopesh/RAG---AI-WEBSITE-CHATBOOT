@@ -2,6 +2,7 @@ fastapi
 uvicorn
 langchain
 langchain-community
+langchain-classic
 chromadb
 beautifulsoup4
 requests
@@ -10,3 +11,4 @@ streamlit
 python-dotenv
 playwright
 langchain-groq
+flashrank
