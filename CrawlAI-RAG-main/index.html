@@ -985,7 +985,7 @@
     const id = 'msg-' + Date.now() + Math.random();
     const isUser = role === 'user';
     if (isUser) {
-      const formatted = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      const formatted = formatText(text);
       chatWrap.innerHTML += `
         <div class="msg msg-user" id="${id}">
           <div class="msg-avatar">👤</div>
@@ -1019,15 +1019,13 @@
     const interval = setInterval(() => {
       if (i < text.length) {
         const current = text.substring(0, i + 1);
-        const formatted = current.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        bubble.innerHTML = formatted + '<span class="typing-cursor"></span>';
+        bubble.innerHTML = formatText(current) + '<span class="typing-cursor"></span>';
         i++;
         const chatWrap = document.getElementById('chat-wrap');
         chatWrap.scrollTop = chatWrap.scrollHeight;
       } else {
         clearInterval(interval);
-        const formatted = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        bubble.innerHTML = formatted;
+        bubble.innerHTML = formatText(text);
         if (copyBtn) copyBtn.style.display = 'inline-block';
       }
     }, speed);
@@ -1037,7 +1035,7 @@
     const chatWrap = document.getElementById('chat-wrap');
     const id = 'msg-' + Date.now() + Math.random();
     const isUser = role === 'user';
-    const formatted = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    const formatted = formatText(text);
     chatWrap.innerHTML += `
       <div class="msg ${isUser ? 'msg-user' : 'msg-ai'}" id="${id}">
         <div class="msg-avatar">${isUser ? '👤' : '🤖'}</div>
@@ -1178,7 +1176,12 @@
     recognition.start();
   }
 
-  // ── DARK/LIGHT MODE ──
+  function formatText(text) {
+    return text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g, '<a href="$2" target="_blank" style="color:#818cf8;text-decoration:underline;word-break:break-all;">$1</a>')
+      .replace(/\n/g, '<br>');
+  }
   function toggleTheme() {
     const isLight = document.body.classList.toggle('light');
     localStorage.setItem('theme', isLight ? 'light' : 'dark');
